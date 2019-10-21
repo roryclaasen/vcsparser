@@ -12,10 +12,11 @@ using vcsparser.core.p4;
 using vcsparser.core.git;
 using System.Globalization;
 
-namespace vcsparser.bugdatabase
+namespace vcsparser.bugdatabase.azuredevops
 {
     public class BugDatabaseProvider : IBugDatabaseProvider
     {
+        public string Key => "AzureDevOps";
         public ILogger Logger { get; set; }
         public IWebRequest WebRequest { get; set; }
         public IAzureDevOpsFactory AzureDevOpsFactory { get; set; } = new AzureDevOpsFactory();

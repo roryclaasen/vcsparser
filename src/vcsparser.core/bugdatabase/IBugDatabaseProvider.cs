@@ -8,6 +8,7 @@ namespace vcsparser.core.bugdatabase
 {
     public interface IBugDatabaseProvider
     {
+        string Key { get; }
         ILogger Logger { get; set; }
         IWebRequest WebRequest { get; set; }
 

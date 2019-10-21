@@ -11,25 +11,25 @@ namespace vcsparser.core.bugdatabase
     public class BugDatabaseDllLoader : IBugDatabaseDllLoader
     {
         private readonly ILogger logger;
-        private readonly IBugDatabaseFactory bugDatabaseFactory;
+        private readonly Dictionary<string, IBugDatabaseProvider> databases;
 
-        public BugDatabaseDllLoader(ILogger logger, IBugDatabaseFactory bugDatabaseFactory)
+        public BugDatabaseDllLoader(ILogger logger)
         {
             this.logger = logger;
-            this.bugDatabaseFactory = bugDatabaseFactory;
+            this.databases = new Dictionary<string, IBugDatabaseProvider>();
         }
 
-        public IBugDatabaseProvider Load(string path, IEnumerable<string> args, IWebRequest webRequest)
+        public void AddBugDatabase(IBugDatabaseProvider databaseProvider)
         {
-            _Assembly dll = bugDatabaseFactory.LoadFile(path);
+            this.databases.Add(databaseProvider.Key, databaseProvider);
+        }
 
-            IEnumerable<Type> validTypes = dll.GetExportedTypes().Where((type) => typeof(IBugDatabaseProvider).IsAssignableFrom(type));
-            if (!validTypes.Any())
-                throw new Exception($"Dll must contain a public implementation of '{typeof(IBugDatabaseProvider)}'");
-            else if (validTypes.Count() > 1)
-                throw new Exception($"Dll can only contain one public implementation of '{typeof(IBugDatabaseProvider)}'. Found {validTypes.Count()}");
+        public IBugDatabaseProvider Load(string key, IEnumerable<string> args, IWebRequest webRequest)
+        {
+            if (!databases.ContainsKey(key))
+                throw new Exception($"No bug database registered with key '{key}'");
 
-            IBugDatabaseProvider databaseProvider = bugDatabaseFactory.CreateInstance(validTypes.First());
+            IBugDatabaseProvider databaseProvider = this.databases[key];
             databaseProvider.Logger = logger;
             databaseProvider.WebRequest = webRequest;
             if (databaseProvider.ProcessArgs(args) != 0)

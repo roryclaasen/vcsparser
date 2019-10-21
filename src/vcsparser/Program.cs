@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using vcsparser.core.bugdatabase;
+using vcsparser.bugdatabase.azuredevops;
 
 namespace vcsparser
 {
@@ -39,12 +40,9 @@ namespace vcsparser
             var logger = new ConsoleLoggerWithTimestamp();
             var stopWatch = new StopWatchWrapper();
             var outputProcessor = new OutputProcessor(new FileStreamFactory(), logger);
-            var bugDatabaseFactory = new BugDatabaseFactory();
-            var bugDatabaseDllLoader = new BugDatabaseDllLoader(logger, bugDatabaseFactory);
-            var webRequest = new WebRequest(new HttpClientWrapperFactory(bugDatabaseFactory));
             var fileSystem = new FileSystem();
             var jsonParser = new JsonListParser<WorkItem>(new FileStreamFactory());
-            var bugDatabaseProcessor = new BugDatabaseProcessor(bugDatabaseDllLoader, webRequest, fileSystem, jsonParser, logger);
+            var bugDatabaseProcessor = CreateBugDatabaseProcessor(logger, fileSystem, jsonParser);
             var processor = new PerforceCodeChurnProcessor(processWrapper, changesParser, describeParser, commandLineParser, bugDatabaseProcessor, logger, stopWatch, outputProcessor, a);
 
             processor.QueryBugDatabase();
@@ -58,12 +56,9 @@ namespace vcsparser
             var gitLogParser = new GitLogParser();
             var logger = new ConsoleLoggerWithTimestamp();
             var outputProcessor = new OutputProcessor(new FileStreamFactory(), logger);
-            var bugDatabaseFactory = new BugDatabaseFactory();
-            var bugDatabaseDllLoader = new BugDatabaseDllLoader(logger, bugDatabaseFactory);
-            var webRequest = new WebRequest(new HttpClientWrapperFactory(bugDatabaseFactory));
             var fileSystem = new FileSystem();
             var jsonParser = new JsonListParser<WorkItem>(new FileStreamFactory());
-            var bugDatabaseProcessor = new BugDatabaseProcessor(bugDatabaseDllLoader, webRequest, fileSystem, jsonParser, logger);
+            var bugDatabaseProcessor = CreateBugDatabaseProcessor(logger, fileSystem, jsonParser);
             var processor = new GitCodeChurnProcessor(commandLineParser, processWrapper, gitLogParser, outputProcessor, bugDatabaseProcessor, logger, a);
 
             processor.QueryBugDatabase();
@@ -81,6 +76,15 @@ namespace vcsparser
             processor.Process(a);
 
             return 0;
+        }
+
+        private static IBugDatabaseProcessor CreateBugDatabaseProcessor(ILogger logger, IFileSystem fileSystem, IJsonListParser<WorkItem> jsonParser)
+        {
+            var bugDatabaseDllLoader = new BugDatabaseDllLoader(logger);
+            bugDatabaseDllLoader.AddBugDatabase(new BugDatabaseProvider());
+
+            var webRequest = new WebRequest(new HttpClientWrapperFactory(new BugDatabaseFactory()));
+            return new BugDatabaseProcessor(bugDatabaseDllLoader, webRequest, fileSystem, jsonParser, logger);
         }
     }
 }

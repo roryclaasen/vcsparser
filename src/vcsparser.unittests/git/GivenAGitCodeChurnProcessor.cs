@@ -172,7 +172,7 @@ namespace vcsparser.unittests.git
         {
             this.args = new GitExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll",
+                BugDatabaseKey = "some/path/to.dll",
                 BugDatabaseOutputFile = "some/path/to/output/files"
             };
 
@@ -189,7 +189,7 @@ namespace vcsparser.unittests.git
         {
             args = new GitExtractCommandLineArgs()
             {
-                BugDatabaseDLL = string.Empty
+                BugDatabaseKey = string.Empty
             };
 
             processor = new GitCodeChurnProcessor(this.commandLineParserMock.Object, this.processWrapperMock.Object,
@@ -205,7 +205,7 @@ namespace vcsparser.unittests.git
         {
             args = new GitExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll"
+                BugDatabaseKey = "some/path/to.dll"
             };
 
             processor = new GitCodeChurnProcessor(this.commandLineParserMock.Object, this.processWrapperMock.Object,
@@ -222,7 +222,7 @@ namespace vcsparser.unittests.git
         {
             args = new GitExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll",
+                BugDatabaseKey = "some/path/to.dll",
                 BugDatabaseOutputFile = "some/path/to/output/files"
             };
 

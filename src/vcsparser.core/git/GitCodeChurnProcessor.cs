@@ -40,12 +40,12 @@ namespace vcsparser.core.git
 
         public void QueryBugDatabase()
         {
-            if (string.IsNullOrWhiteSpace(args.BugDatabaseDLL))
+            if (string.IsNullOrWhiteSpace(args.BugDatabaseKey))
                 return;
             if (string.IsNullOrWhiteSpace(args.BugDatabaseOutputFile))
                 throw new Exception("Dll specified without known output file");
 
-            var bugCache = bugDatabaseProcessor.ProcessBugDatabase(args.BugDatabaseDLL, args.BugDatabaseDllArgs);
+            var bugCache = bugDatabaseProcessor.ProcessBugDatabase(args.BugDatabaseKey, args.BugDatabaseArgs);
 
             logger.LogToConsole(bugCache.Count + " bug database dates to output");
 

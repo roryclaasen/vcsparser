@@ -319,7 +319,7 @@ namespace vcsparser.unittests
         {
             this.commandLineArgs = new P4ExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll",
+                BugDatabaseKey = "some/path/to.dll",
                 BugDatabaseOutputFile = "some/path/to/output/files"
             };
 
@@ -335,7 +335,7 @@ namespace vcsparser.unittests
         {
             this.commandLineArgs = new P4ExtractCommandLineArgs()
             {
-                BugDatabaseDLL = string.Empty
+                BugDatabaseKey = string.Empty
             };
 
             this.processor = new PerforceCodeChurnProcessor(processWrapperMock.Object, changesParserMock.Object, describeParserMock.Object, commandLineParserMock.Object, bugDatabseMock.Object, loggerMock.Object, stopWatchMock.Object, outputProcessorMock.Object, commandLineArgs);
@@ -350,7 +350,7 @@ namespace vcsparser.unittests
         {
             this.commandLineArgs = new P4ExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll"
+                BugDatabaseKey = "some/path/to.dll"
             };
 
             this.processor = new PerforceCodeChurnProcessor(processWrapperMock.Object, changesParserMock.Object, describeParserMock.Object, commandLineParserMock.Object, bugDatabseMock.Object, loggerMock.Object, stopWatchMock.Object, outputProcessorMock.Object, commandLineArgs);
@@ -366,7 +366,7 @@ namespace vcsparser.unittests
         {
             this.commandLineArgs = new P4ExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll",
+                BugDatabaseKey = "some/path/to.dll",
                 BugDatabaseOutputFile = "some/path/to/output/files"
             };
 
@@ -386,7 +386,7 @@ namespace vcsparser.unittests
         {
             this.commandLineArgs = new P4ExtractCommandLineArgs()
             {
-                BugDatabaseDLL = "some/path/to.dll",
+                BugDatabaseKey = "some/path/to.dll",
                 BugDatabaseOutputFile = "some/path/to/output/files"
             };
 

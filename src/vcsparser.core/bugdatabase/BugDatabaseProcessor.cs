@@ -31,10 +31,9 @@ namespace vcsparser.core.bugdatabase
             this.logger = logger;
         }
 
-        public Dictionary<DateTime, Dictionary<string, WorkItem>> ProcessBugDatabase(string dllPath, IEnumerable<string> dllArgs)
+        public Dictionary<DateTime, Dictionary<string, WorkItem>> ProcessBugDatabase(string databaseKey, IEnumerable<string> databaseArgs)
         {
-            string path = fileSystem.GetFullPath(dllPath);
-            IBugDatabaseProvider databaseProvider = bugDatabaseDllLoader.Load(path, dllArgs, webRequest);
+            IBugDatabaseProvider databaseProvider = bugDatabaseDllLoader.Load(databaseKey, databaseArgs, webRequest);
             return databaseProvider.Process();
         }
 

@@ -8,6 +8,7 @@ namespace vcsparser.core.bugdatabase
 {
     public interface IBugDatabaseDllLoader
     {
+        void AddBugDatabase(IBugDatabaseProvider databaseProvider);
         IBugDatabaseProvider Load(string path, IEnumerable<string> args, IWebRequest webRequest);
     }
 }
