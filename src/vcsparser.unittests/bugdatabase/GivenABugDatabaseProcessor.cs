@@ -14,7 +14,7 @@ namespace vcsparser.unittests.bugdatabase
     public class GivenABugDatabaseProcessor
     {
         private Mock<IBugDatabaseProvider> bugDatabaseProviderMock;
-        private Mock<BugDatabaseRegistry> bugDatabaseLoaderMock;
+        private Mock<IBugDatabaseRegistry> bugDatabaseRegistryMock;
         private Mock<IWebRequest> webRequest;
         private Mock<IFileSystem> fileSystemMock;
         private Mock<IJsonListParser<WorkItem>> workItemParser;
@@ -23,13 +23,16 @@ namespace vcsparser.unittests.bugdatabase
         private BugDatabaseProcessor bugDatabaseProcessor;
         private Mock<IChangesetProcessor> changesetProcessorMock;
 
-        private string someDllPath;
-        private IEnumerable<string> someDllArgs;
+        private string someDatabaseKey;
+        private IEnumerable<string> someDatabaseArgs;
 
         public GivenABugDatabaseProcessor()
         {
+            this.someDatabaseKey = "Some Database Key";
+            this.someDatabaseArgs = new List<string>() { "--some", "dll", "-arguments" };
+
             this.bugDatabaseProviderMock = new Mock<IBugDatabaseProvider>();
-            this.bugDatabaseProviderMock.Setup(b => b.ProcessArgs(It.IsAny<IEnumerable<string>>())).Returns(0);
+            this.bugDatabaseProviderMock.Setup(b => b.ProcessArgs(someDatabaseArgs)).Returns(0);
             this.bugDatabaseProviderMock.Setup(b => b.Process()).Returns(new Dictionary<DateTime, Dictionary<string, WorkItem>>()
             {
                     {
@@ -49,12 +52,13 @@ namespace vcsparser.unittests.bugdatabase
                     }
             });
 
-            this.bugDatabaseLoaderMock = new Mock<BugDatabaseRegistry>();
-            this.bugDatabaseLoaderMock
-                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
+            this.webRequest = new Mock<IWebRequest>();
+
+            this.bugDatabaseRegistryMock = new Mock<IBugDatabaseRegistry>();
+            this.bugDatabaseRegistryMock
+                .Setup(b => b.Retrive(someDatabaseKey, someDatabaseArgs, webRequest.Object))
                 .Returns(bugDatabaseProviderMock.Object);
 
-            this.webRequest = new Mock<IWebRequest>();
 
             this.fileSystemMock = new Mock<IFileSystem>();
 
@@ -74,44 +78,13 @@ namespace vcsparser.unittests.bugdatabase
             this.changesetProcessorMock = new Mock<IChangesetProcessor>();
             this.changesetProcessorMock.Setup(c => c.WorkItemCache).Returns(new Dictionary<string, List<WorkItem>>());
 
-            this.someDllPath = "some/path/to/dll";
-            this.someDllArgs = new List<string>() { "--some", "dll", "-arguments" };
-            this.bugDatabaseProcessor = new BugDatabaseProcessor(this.bugDatabaseLoaderMock.Object, this.webRequest.Object, this.fileSystemMock.Object, this.workItemParser.Object, this.loggerMock.Object);
-
-        }
-
-        [Fact]
-        public void WhenProcessBugDatabaseNoDllPathProcessortShouldExit()
-        {
-            this.fileSystemMock.Setup(f => f.GetFullPath(It.IsAny<string>())).Throws<ArgumentNullException>();
-            Action action = () => this.bugDatabaseProcessor.ProcessBugDatabase(null, someDllArgs);
-
-            Assert.Throws<ArgumentNullException>(action);
-            this.bugDatabaseLoaderMock.Verify(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()), Times.Never);
-        }
-
-        [Fact]
-        public void WhenProcessBugDatabaseProviderNullShouldExit()
-        {
-            this.bugDatabaseLoaderMock
-                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
-                .Throws(new Exception("Some Exception!"));
-
-            Action action = () => this.bugDatabaseProcessor.ProcessBugDatabase(someDllPath, someDllArgs);
-
-            var exception = Assert.Throws<Exception>(action);
-            Assert.Equal("Some Exception!", exception.Message);
-            this.bugDatabaseProviderMock.Verify(b => b.Process(), Times.Never);
+            this.bugDatabaseProcessor = new BugDatabaseProcessor(this.bugDatabaseRegistryMock.Object, this.webRequest.Object, this.fileSystemMock.Object, this.workItemParser.Object, this.loggerMock.Object);
         }
 
         [Fact]
         public void WhenProcessBugDatabaseShouldProcess()
         {
-            this.bugDatabaseLoaderMock
-                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
-                .Returns(bugDatabaseProviderMock.Object);
-
-            this.bugDatabaseProcessor.ProcessBugDatabase(someDllPath, someDllArgs);
+            this.bugDatabaseProcessor.ProcessBugDatabase(someDatabaseKey, someDatabaseArgs);
 
             this.bugDatabaseProviderMock.Verify(b => b.Process(), Times.Once);
         }

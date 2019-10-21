@@ -59,7 +59,7 @@
     <Compile Include="ApiConverter.cs" />
     <Compile Include="AzureDevOpsFactory.cs" />
     <Compile Include="AzureDevOpsRequest.cs" />
-    <Compile Include="DllArgs.cs" />
+    <Compile Include="BugDatabaseArgs.cs" />
     <Compile Include="BugDatabaseProvider.cs" />
     <Compile Include="IApiConverter.cs" />
     <Compile Include="IAzureDevOps.cs" />

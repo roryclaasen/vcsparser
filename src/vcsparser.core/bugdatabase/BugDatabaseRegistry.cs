@@ -27,7 +27,7 @@ namespace vcsparser.core.bugdatabase
             if (!databases.ContainsKey(key.ToLower()))
                 throw new Exception($"No Bug Database registered with key '{key}'");
 
-            IBugDatabaseProvider databaseProvider = this.databases[key];
+            IBugDatabaseProvider databaseProvider = this.databases[key.ToLower()];
             if (databaseProvider.ProcessArgs(args) != 0)
                 throw new Exception("Unable to parse Bug Databse arguments. Check requirements");
 

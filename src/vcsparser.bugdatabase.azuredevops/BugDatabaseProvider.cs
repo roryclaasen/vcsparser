@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vcsparser.bugdatabase.azuredevops;
-using System.Text.RegularExpressions;
 using vcsparser.core;
 using vcsparser.core.bugdatabase;
-using vcsparser.core.p4;
-using vcsparser.core.git;
 using System.Globalization;
 
 namespace vcsparser.bugdatabase.azuredevops

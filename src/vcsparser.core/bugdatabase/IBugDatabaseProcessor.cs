@@ -11,8 +11,8 @@ namespace vcsparser.core.bugdatabase
         /// <summary>
         /// Process the provided bug database and return the Work Items found
         /// </summary>
-        /// <param name="dllPath">The key of the bug database to use</param>
-        /// <param name="dllArgs">List of arguments to pass to the bugdatabase</param>
+        /// <param name="databaseKey">The key of the bug database to use</param>
+        /// <param name="databaseArgs">List of arguments to pass to the bugdatabase</param>
         /// <returns>Dictionary indexed by DateTime, indexed by changeset id</returns>
         Dictionary<DateTime, Dictionary<string, WorkItem>> ProcessBugDatabase(string databaseKey, IEnumerable<string> databaseArgs);
         void ProcessCache(string cacheDirectory, IChangesetProcessor changesetProcessor);

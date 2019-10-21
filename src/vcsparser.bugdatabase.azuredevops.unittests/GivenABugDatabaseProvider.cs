@@ -15,6 +15,10 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
         private Mock<ILogger> loggerMock;
         private Mock<IWebRequest> webRequestMock;
         private Mock<IAzureDevOps> azureDevOpsMock;
+        private Mock<ITimeKeeper> timeKeeperMock;
+        private Mock<IApiConverter> apiConverterMock;
+        private Mock<IAzureDevOpsRequest> azureDevOpsRequest;
+        private Mock<IBugDatabaseFactory> bugDatabaseFactoryMock;
         private Mock<IAzureDevOpsFactory> azureDevOpsFactoryMock;
 
         private IEnumerable<string> dllArgs;
@@ -24,11 +28,19 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
         {
             this.loggerMock = new Mock<ILogger>();
             this.webRequestMock = new Mock<IWebRequest>();
+            this.timeKeeperMock = new Mock<ITimeKeeper>();
+            this.apiConverterMock = new Mock<IApiConverter>();
+            this.azureDevOpsRequest = new Mock<IAzureDevOpsRequest>();
 
             this.azureDevOpsMock = new Mock<IAzureDevOps>();
             this.azureDevOpsMock.Setup(a => a.GetWorkItems()).Returns(new Dictionary<DateTime, Dictionary<string, WorkItem>>());
 
+            this.bugDatabaseFactoryMock = new Mock<IBugDatabaseFactory>();
+            this.bugDatabaseFactoryMock.Setup(f => f.TimeKeeper(TimeSpan.FromSeconds(30))).Returns(timeKeeperMock.Object);
+
             this.azureDevOpsFactoryMock = new Mock<IAzureDevOpsFactory>();
+            this.azureDevOpsFactoryMock.Setup(f => f.AzureDevOpsRequest(webRequestMock.Object, It.IsAny<BugDatabaseArgs>())).Returns(azureDevOpsRequest.Object);
+            this.azureDevOpsFactoryMock.Setup(f => f.ApiConverter()).Returns(apiConverterMock.Object);
             this.azureDevOpsFactoryMock.Setup(f => f.AzureDevOps(It.IsAny<ILogger>(), It.IsAny<IAzureDevOpsRequest>(), It.IsAny<IApiConverter>(), It.IsAny<ITimeKeeper>())).Returns(this.azureDevOpsMock.Object);
 
             this.dllArgs = new string[] {
@@ -40,10 +52,7 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
                 "--token", "SomePersonalAccessToken"
             };
 
-            this.provider = new BugDatabaseProvider();
-            this.provider.Logger = this.loggerMock.Object;
-            this.provider.WebRequest = webRequestMock.Object;
-            this.provider.AzureDevOpsFactory = this.azureDevOpsFactoryMock.Object;
+            this.provider = new BugDatabaseProvider(bugDatabaseFactoryMock.Object, azureDevOpsFactoryMock.Object, webRequestMock.Object, loggerMock.Object);
         }
 
         [Fact]
@@ -77,10 +86,12 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
             var code = this.provider.ProcessArgs(this.dllArgs);
 
             Assert.Equal(0, code);
+
+            azureDevOpsFactoryMock.Verify(f => f.AzureDevOps(loggerMock.Object, azureDevOpsRequest.Object, apiConverterMock.Object, timeKeeperMock.Object), Times.Once);
         }
 
         [Fact]
-        public void WhenProcessBeforeProcessArgs_ThenReturnNull()
+        public void WhenProcessBeforeProcessArgs_ThenReturnEmptyDictionary()
         {
             var workItemList = this.provider.Process();
 
