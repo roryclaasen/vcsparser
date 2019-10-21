@@ -14,7 +14,7 @@ namespace vcsparser.unittests.bugdatabase
     public class GivenABugDatabaseProcessor
     {
         private Mock<IBugDatabaseProvider> bugDatabaseProviderMock;
-        private Mock<IBugDatabaseDllLoader> bugDatabaseLoaderMock;
+        private Mock<BugDatabaseRegistry> bugDatabaseLoaderMock;
         private Mock<IWebRequest> webRequest;
         private Mock<IFileSystem> fileSystemMock;
         private Mock<IJsonListParser<WorkItem>> workItemParser;
@@ -49,9 +49,9 @@ namespace vcsparser.unittests.bugdatabase
                     }
             });
 
-            this.bugDatabaseLoaderMock = new Mock<IBugDatabaseDllLoader>();
+            this.bugDatabaseLoaderMock = new Mock<BugDatabaseRegistry>();
             this.bugDatabaseLoaderMock
-                .Setup(b => b.Load(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
+                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
                 .Returns(bugDatabaseProviderMock.Object);
 
             this.webRequest = new Mock<IWebRequest>();
@@ -87,14 +87,14 @@ namespace vcsparser.unittests.bugdatabase
             Action action = () => this.bugDatabaseProcessor.ProcessBugDatabase(null, someDllArgs);
 
             Assert.Throws<ArgumentNullException>(action);
-            this.bugDatabaseLoaderMock.Verify(b => b.Load(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()), Times.Never);
+            this.bugDatabaseLoaderMock.Verify(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()), Times.Never);
         }
 
         [Fact]
         public void WhenProcessBugDatabaseProviderNullShouldExit()
         {
             this.bugDatabaseLoaderMock
-                .Setup(b => b.Load(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
+                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
                 .Throws(new Exception("Some Exception!"));
 
             Action action = () => this.bugDatabaseProcessor.ProcessBugDatabase(someDllPath, someDllArgs);
@@ -108,7 +108,7 @@ namespace vcsparser.unittests.bugdatabase
         public void WhenProcessBugDatabaseShouldProcess()
         {
             this.bugDatabaseLoaderMock
-                .Setup(b => b.Load(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
+                .Setup(b => b.Retrive(It.IsAny<string>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IWebRequest>()))
                 .Returns(bugDatabaseProviderMock.Object);
 
             this.bugDatabaseProcessor.ProcessBugDatabase(someDllPath, someDllArgs);

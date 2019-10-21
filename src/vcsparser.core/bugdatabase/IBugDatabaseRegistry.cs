@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace vcsparser.core.bugdatabase
 {
-    public interface IBugDatabaseDllLoader
+    public interface IBugDatabaseRegistry
     {
         void AddBugDatabase(IBugDatabaseProvider databaseProvider);
-        IBugDatabaseProvider Load(string path, IEnumerable<string> args, IWebRequest webRequest);
+        IBugDatabaseProvider Retrive(string path, IEnumerable<string> args, IWebRequest webRequest);
     }
 }

@@ -22,7 +22,7 @@ namespace vcsparser.unittests.bugdatabase
         private Mock<IWebRequest> webRequestMock;
         private Mock<ILogger> loggerMock;
 
-        private IBugDatabaseDllLoader bugDatabaseDllLoader;
+        private BugDatabaseRegistry bugDatabaseDllLoader;
 
         private string dllPath;
         private IEnumerable<string> dllArgs;
@@ -43,7 +43,7 @@ namespace vcsparser.unittests.bugdatabase
 
             this.loggerMock = new Mock<ILogger>();
 
-            this.bugDatabaseDllLoader = new BugDatabaseDllLoader(this.loggerMock.Object, this.bugDatabaseFactoryMock.Object);
+            this.bugDatabaseDllLoader = new BugDatabaseRegistry(this.loggerMock.Object, this.bugDatabaseFactoryMock.Object);
 
             this.dllPath = "some/path/to.dll";
             this.dllArgs = new List<string>() { "--some", "dll", "-args" };
@@ -54,7 +54,7 @@ namespace vcsparser.unittests.bugdatabase
         {
             this.bugDatabaseFactoryMock.Setup((f) => f.LoadFile(It.IsAny<string>())).Returns(() => throw new Exception("Some Exception!"));
 
-            Action action = () => this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            Action action = () => this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             var exception = Assert.Throws<Exception>(action);
             Assert.Equal($"Some Exception!", exception.Message);
@@ -65,7 +65,7 @@ namespace vcsparser.unittests.bugdatabase
         {
             this.assemblyMock.Setup((a) => a.GetExportedTypes()).Returns(new Type[] { });
 
-            Action action = () => this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            Action action = () => this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             var exception = Assert.Throws<Exception>(action);
             Assert.Equal($"Dll must contain a public implementation of '{typeof(IBugDatabaseProvider)}'", exception.Message);
@@ -76,7 +76,7 @@ namespace vcsparser.unittests.bugdatabase
         {
             this.assemblyMock.Setup((a) => a.GetExportedTypes()).Returns(new Type[] { typeof(NotAnImplementationOfIBugDatabaseProvider) });
 
-            Action action = () => this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            Action action = () => this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             var exception = Assert.Throws<Exception>(action);
             Assert.Equal($"Dll must contain a public implementation of '{typeof(IBugDatabaseProvider)}'", exception.Message);
@@ -87,7 +87,7 @@ namespace vcsparser.unittests.bugdatabase
         {
             this.assemblyMock.Setup((a) => a.GetExportedTypes()).Returns(new Type[] { typeof(IBugDatabaseProvider), typeof(IBugDatabaseProvider) });
 
-            Action action = () => this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            Action action = () => this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             var exception = Assert.Throws<Exception>(action);
             Assert.Equal($"Dll can only contain one public implementation of '{typeof(IBugDatabaseProvider)}'. Found 2", exception.Message);
@@ -98,7 +98,7 @@ namespace vcsparser.unittests.bugdatabase
         {
             this.bugDatabaseProviderMock.Setup((p) => p.ProcessArgs(It.IsAny<IEnumerable<string>>())).Returns(1);
 
-            Action action = () => this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            Action action = () => this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             var exception = Assert.Throws<Exception>(action);
             Assert.Equal("Unable to parse Dll arguments. Check requirements", exception.Message);
@@ -107,7 +107,7 @@ namespace vcsparser.unittests.bugdatabase
         [Fact]
         public void WhenValidDllThenReturnBugDatabaseProvider()
         {
-            var provider = this.bugDatabaseDllLoader.Load(this.dllPath, this.dllArgs, this.webRequestMock.Object);
+            var provider = this.bugDatabaseDllLoader.Retrive(this.dllPath, this.dllArgs, this.webRequestMock.Object);
 
             Assert.NotNull(provider);
             Assert.IsAssignableFrom<IBugDatabaseProvider>(provider);

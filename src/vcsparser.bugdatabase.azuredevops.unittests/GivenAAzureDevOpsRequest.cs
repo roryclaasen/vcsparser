@@ -17,7 +17,7 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
     {
         private Mock<IWebRequest> webRequestMock;
 
-        private DllArgs SomeDllArgs;
+        private BugDatabaseArgs SomeDllArgs;
         private IAzureDevOpsRequest request;
 
         private Task<HttpResponseMessage> GetResponseMessage(string response, HttpStatusCode statusCode)
@@ -31,7 +31,7 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
         {
             this.webRequestMock = new Mock<IWebRequest>();
 
-            this.SomeDllArgs = new DllArgs
+            this.SomeDllArgs = new BugDatabaseArgs
             {
                 Organisation = "SomeOrganisation",
                 Project = "SomeProject",

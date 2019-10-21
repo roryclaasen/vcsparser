@@ -80,11 +80,13 @@ namespace vcsparser
 
         private static IBugDatabaseProcessor CreateBugDatabaseProcessor(ILogger logger, IFileSystem fileSystem, IJsonListParser<WorkItem> jsonParser)
         {
-            var bugDatabaseDllLoader = new BugDatabaseDllLoader(logger);
-            bugDatabaseDllLoader.AddBugDatabase(new BugDatabaseProvider());
+            var bugDatabaseFactory = new BugDatabaseFactory();
+            var webRequest = new WebRequest(new HttpClientWrapperFactory(bugDatabaseFactory));
 
-            var webRequest = new WebRequest(new HttpClientWrapperFactory(new BugDatabaseFactory()));
-            return new BugDatabaseProcessor(bugDatabaseDllLoader, webRequest, fileSystem, jsonParser, logger);
+            var registry = new BugDatabaseRegistry();
+            registry.AddBugDatabase(new BugDatabaseProvider(bugDatabaseFactory, new AzureDevOpsFactory(), webRequest, logger));
+
+            return new BugDatabaseProcessor(registry, webRequest, fileSystem, jsonParser, logger);
         }
     }
 }

@@ -10,6 +10,8 @@ namespace vcsparser.bugdatabase.azuredevops
 {
     public interface IAzureDevOpsFactory
     {
-        IAzureDevOps GetAzureDevOps(ILogger logger, IAzureDevOpsRequest request, IApiConverter apiConverter, ITimeKeeper timeKeeper);
+        IAzureDevOps AzureDevOps(ILogger logger, IAzureDevOpsRequest request, IApiConverter apiConverter, ITimeKeeper timeKeeper);
+        IAzureDevOpsRequest AzureDevOpsRequest(IWebRequest webRequest, BugDatabaseArgs args);
+        IApiConverter ApiConverter();
     }
 }

@@ -13,11 +13,11 @@ namespace vcsparser.bugdatabase.azuredevops
 {
     public class AzureDevOpsRequest : IAzureDevOpsRequest
     {
-        private readonly DllArgs args;
+        private readonly BugDatabaseArgs args;
 
         private readonly IWebRequest webRequest;
 
-        public AzureDevOpsRequest(IWebRequest webRequest, DllArgs args)
+        public AzureDevOpsRequest(IWebRequest webRequest, BugDatabaseArgs args)
         {
             this.webRequest = webRequest;
             this.args = args;

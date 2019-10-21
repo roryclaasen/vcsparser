@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace vcsparser.bugdatabase.azuredevops
 {
-    public class DllArgs
+    public class BugDatabaseArgs
     {
         [Option("organisation", HelpText = "Organisation of where project exists", Required = true)]
         public string Organisation { get; set; }

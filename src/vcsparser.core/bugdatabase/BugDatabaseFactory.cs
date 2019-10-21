@@ -12,5 +12,15 @@ namespace vcsparser.core.bugdatabase
         {
             return new HttpClientWrapper();
         }
+
+        public ITimeKeeper TimeKeeper(TimeSpan timeSpan)
+        {
+            return new TimeKeeper(timeSpan);
+        }
+
+        public ITimeKeeper TimeKeeper(TimeSpan timeSpan, Action action)
+        {
+            return new TimeKeeper(timeSpan, action);
+        }
     }
 }

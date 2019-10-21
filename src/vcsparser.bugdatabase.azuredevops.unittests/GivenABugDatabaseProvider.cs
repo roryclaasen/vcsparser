@@ -29,7 +29,7 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
             this.azureDevOpsMock.Setup(a => a.GetWorkItems()).Returns(new Dictionary<DateTime, Dictionary<string, WorkItem>>());
 
             this.azureDevOpsFactoryMock = new Mock<IAzureDevOpsFactory>();
-            this.azureDevOpsFactoryMock.Setup(f => f.GetAzureDevOps(It.IsAny<ILogger>(), It.IsAny<IAzureDevOpsRequest>(), It.IsAny<IApiConverter>(), It.IsAny<ITimeKeeper>())).Returns(this.azureDevOpsMock.Object);
+            this.azureDevOpsFactoryMock.Setup(f => f.AzureDevOps(It.IsAny<ILogger>(), It.IsAny<IAzureDevOpsRequest>(), It.IsAny<IApiConverter>(), It.IsAny<ITimeKeeper>())).Returns(this.azureDevOpsMock.Object);
 
             this.dllArgs = new string[] {
                 "--organisation", "SomeOrganisation",

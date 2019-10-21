@@ -8,32 +8,28 @@ using System.Runtime.InteropServices;
 
 namespace vcsparser.core.bugdatabase
 {
-    public class BugDatabaseDllLoader : IBugDatabaseDllLoader
+    public class BugDatabaseRegistry : IBugDatabaseRegistry
     {
-        private readonly ILogger logger;
         private readonly Dictionary<string, IBugDatabaseProvider> databases;
 
-        public BugDatabaseDllLoader(ILogger logger)
+        public BugDatabaseRegistry()
         {
-            this.logger = logger;
             this.databases = new Dictionary<string, IBugDatabaseProvider>();
         }
 
         public void AddBugDatabase(IBugDatabaseProvider databaseProvider)
         {
-            this.databases.Add(databaseProvider.Key, databaseProvider);
+            this.databases.Add(databaseProvider.Key.ToLower(), databaseProvider);
         }
 
-        public IBugDatabaseProvider Load(string key, IEnumerable<string> args, IWebRequest webRequest)
+        public IBugDatabaseProvider Retrive(string key, IEnumerable<string> args, IWebRequest webRequest)
         {
-            if (!databases.ContainsKey(key))
-                throw new Exception($"No bug database registered with key '{key}'");
+            if (!databases.ContainsKey(key.ToLower()))
+                throw new Exception($"No Bug Database registered with key '{key}'");
 
             IBugDatabaseProvider databaseProvider = this.databases[key];
-            databaseProvider.Logger = logger;
-            databaseProvider.WebRequest = webRequest;
             if (databaseProvider.ProcessArgs(args) != 0)
-                throw new Exception("Unable to parse Dll arguments. Check requirements");
+                throw new Exception("Unable to parse Bug Databse arguments. Check requirements");
 
             return databaseProvider;
         }

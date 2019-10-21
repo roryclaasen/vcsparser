@@ -9,8 +9,6 @@ namespace vcsparser.core.bugdatabase
     public interface IBugDatabaseProvider
     {
         string Key { get; }
-        ILogger Logger { get; set; }
-        IWebRequest WebRequest { get; set; }
 
         int ProcessArgs(IEnumerable<string> args);
         Dictionary<DateTime, Dictionary<string, WorkItem>> Process();

@@ -14,18 +14,17 @@ namespace vcsparser.core.bugdatabase
 {
     public class BugDatabaseProcessor : IBugDatabaseProcessor
     {
-        private readonly IBugDatabaseDllLoader bugDatabaseDllLoader;
+        private readonly IBugDatabaseRegistry registry;
         private readonly IWebRequest webRequest;
 
         private readonly IFileSystem fileSystem;
         private readonly IJsonListParser<WorkItem> workItemParser;
         private readonly ILogger logger;
 
-        public BugDatabaseProcessor(IBugDatabaseDllLoader bugDatabaseDllLoader, IWebRequest webRequest, IFileSystem fileSystem, IJsonListParser<WorkItem> workItemParser, ILogger logger)
+        public BugDatabaseProcessor(IBugDatabaseRegistry registry, IWebRequest webRequest, IFileSystem fileSystem, IJsonListParser<WorkItem> workItemParser, ILogger logger)
         {
-            this.bugDatabaseDllLoader = bugDatabaseDllLoader;
+            this.registry = registry;
             this.webRequest = webRequest;
-
             this.fileSystem = fileSystem;
             this.workItemParser = workItemParser;
             this.logger = logger;
@@ -33,7 +32,7 @@ namespace vcsparser.core.bugdatabase
 
         public Dictionary<DateTime, Dictionary<string, WorkItem>> ProcessBugDatabase(string databaseKey, IEnumerable<string> databaseArgs)
         {
-            IBugDatabaseProvider databaseProvider = bugDatabaseDllLoader.Load(databaseKey, databaseArgs, webRequest);
+            IBugDatabaseProvider databaseProvider = registry.Retrive(databaseKey, databaseArgs, webRequest);
             return databaseProvider.Process();
         }
 

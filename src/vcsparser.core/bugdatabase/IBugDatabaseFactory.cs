@@ -9,5 +9,7 @@ namespace vcsparser.core.bugdatabase
     public interface IBugDatabaseFactory
     {
         IHttpClientWrapper GetHttpClientWrapper();
+        ITimeKeeper TimeKeeper(TimeSpan timeSpan);
+        ITimeKeeper TimeKeeper(TimeSpan timeSpan, Action action);
     }
 }

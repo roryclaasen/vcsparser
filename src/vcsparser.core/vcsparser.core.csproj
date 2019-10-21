@@ -54,11 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorsData.cs" />
-    <Compile Include="bugdatabase\BugDatabaseDllLoader.cs" />
+    <Compile Include="bugdatabase\BugDatabaseRegistry.cs" />
     <Compile Include="bugdatabase\BugDatabaseFactory.cs" />
     <Compile Include="bugdatabase\HttpClientWrapper.cs" />
     <Compile Include="bugdatabase\HttpClientWrapperFactory.cs" />
-    <Compile Include="bugdatabase\IBugDatabaseDllLoader.cs" />
+    <Compile Include="bugdatabase\IBugDatabaseRegistry.cs" />
     <Compile Include="bugdatabase\IBugDatabaseFactory.cs" />
     <Compile Include="bugdatabase\IBugDatabaseProcessor.cs" />
     <Compile Include="bugdatabase\IBugDatabaseProvider.cs" />
