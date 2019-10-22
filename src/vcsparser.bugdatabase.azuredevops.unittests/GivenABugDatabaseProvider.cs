@@ -56,6 +56,14 @@ namespace vcsparser.bugdatabase.azuredevops.unittests
         }
 
         [Fact]
+        public void WhenKey_ThenReturnKey()
+        {
+            var key = this.provider.Key;
+
+            Assert.Equal("AzureDevOps", key);
+        }
+
+        [Fact]
         public void WhenProcessArgsFail_ThenReturnOne()
         {
             var code = this.provider.ProcessArgs(new string[] { "--some", "args", "--that", "are", "--wrong" });

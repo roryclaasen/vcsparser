@@ -30,6 +30,12 @@ namespace vcsparser.unittests.bugdatabase
         }
 
         [Fact]
+        public void WhenCreatingTimeKeeperWithoutActionThenDontThrow()
+        {
+            _ = new TimeKeeper(TimeSpan.Zero);
+        }
+
+        [Fact]
         public void WhenStartThenRunThread()
         {
             Mock<Action> someAction = new Mock<Action>();
